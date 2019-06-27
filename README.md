@@ -18,6 +18,9 @@ git clone https://github.com/anthony9981/gnome-ext-gia-vang.git
 ## Gold Rate Source
 https://service.baomoi.com/gold.json
 
+## TO DO
+- Add multiple gold type rate
+- Add Up or Down arrow base on rate
 
 ## License
 
