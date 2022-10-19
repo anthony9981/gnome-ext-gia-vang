@@ -1,6 +1,7 @@
 
 const St = imports.gi.St;
 const Main = imports.ui.main;
+const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 const Soup = imports.gi.Soup;
 const Mainloop = imports.mainloop;
@@ -11,25 +12,29 @@ const GV_URL = 'https://service.baomoi.com/gold.json';
 const GV_REFERER = 'https://baomoi.com/';
 
 let _httpSession;
-const GiaVangIndicator = new Lang.Class({
-	Name: 'GiaVangIndicator',
-	Extends: PanelMenu.Button,
-	_init: function () {
-		this.parent(0.0, 'Giá Vàng', false);
+const GiaVangIndicator = new GObject.registerClass(
+	class GiaVangIndicator extends PanelMenu.Button {
+
+	_init () {
+		super._init(St.Align.START);
+
+		//this.parent(0.0, 'Giá Vàng', false);
 		this.buttonText = new St.Label({
 			text: _('Loading...'),
 			y_align: Clutter.ActorAlign.CENTER
 		});
 		this.actor.add_actor(this.buttonText);
 		this._refresh();
-	},
-	_refresh: function () {
+	}
+
+	_refresh() {
 		this._loadData(this._refreshUI);
 		this._removeTimeout();
-		this._timeout = Mainloop.timeout_add_seconds(10, Lang.bind(this, this._refresh));
+		this._timeout = Mainloop.timeout_add_seconds(60, Lang.bind(this, this._refresh));
 		return true;
-	},
-	_loadData: function () {
+	}
+
+	_loadData() {
 		let params = {};
 		_httpSession = new Soup.Session();
 		let message = Soup.form_request_new_from_hash('GET', GV_URL, params);
@@ -41,8 +46,9 @@ const GiaVangIndicator = new Lang.Class({
 			let json = JSON.parse(message.response_body.data); // change this
 			this._refreshUI(json);
 		}));
-	},
-	_refreshUI: function (data) {
+	}
+
+	_refreshUI(data) {
 		for (var i = 0; i < data.length; i++) {
 			if (data[i].CityName.toString() === 'Hà Nội') {
 				let rate = data[i].GoldRateInfo[0];
@@ -53,14 +59,18 @@ const GiaVangIndicator = new Lang.Class({
 				break;
 			}
 		}
-	},
-	_removeTimeout: function () {
+	}
+
+
+	_removeTimeout() {
 		if (this._timeout) {
 			Mainloop.source_remove(this._timeout);
 			this._timeout = null;
 		}
-	},
-	stop: function () {
+	}
+
+
+	stop () {
 		if (_httpSession !== undefined) {
 			_httpSession.abort();
 		}
@@ -72,8 +82,9 @@ const GiaVangIndicator = new Lang.Class({
 		this._timeout = undefined;
 
 		this.menu.removeAll();
-	},
-	_format: function (amount, decimalCount = 2, decimal = ".", thousands = ",") {
+	}
+
+	_format(amount, decimalCount = 2, decimal = ".", thousands = ",") {
 		try {
 		  decimalCount = Math.abs(decimalCount);
 		  decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
@@ -83,7 +94,7 @@ const GiaVangIndicator = new Lang.Class({
 		  let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
 		  let j = (i.length > 3) ? i.length % 3 : 0;
 	  
-		  return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+		  return negativeSign + (j ? i.substring(0, j) + thousands : '') + i.substring(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
 		} catch (e) {
 		  global.log(e)
 		}
