@@ -1,1 +1,20 @@
-{"name": "GiaVang2019", "description": "Cap nhat gia vang tren panel", "uuid": "giavang2019@github.com", "shell-version": ["3.28", "3.30", "3.32", "3.34", "3.36", "3.38", "40", "40.0", "41", "42", "43"]}
+{
+    "description": "Update gold rate in gnome panel",
+    "name": "Vietnam Gold Rate Indicator",
+    "shell-version": [
+        "3.28",
+        "3.30",
+        "3.34",
+        "3.32",
+        "3.36",
+        "3.38",
+        "40.0",
+        "40",
+        "41",
+        "42",
+        "43"
+    ],
+    "url": "https://github.com/anthony9981/gnome-ext-vietnam-gold-rate/issues",
+    "uuid": "giavang2019@vietnamtutor.com",
+    "version": 1.1
+}
